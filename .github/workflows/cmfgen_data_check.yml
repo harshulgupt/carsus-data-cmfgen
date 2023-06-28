@@ -45,7 +45,15 @@ jobs:
         id: commit_changes
         run: |
           git add .
-          git commit -m "New dataset added"
+          git diff --quiet --exit-code --cached || git commit -m "New dataset added"
+          exit_code=$?
+          if [ $exit_code -eq 1 ] ; then
+            echo "No changes to commit"
+            exit 0
+          else
+            echo "Changes committed"
+          fi
+
 
       - name: Push changes 
         uses: ad-m/github-push-action@master
